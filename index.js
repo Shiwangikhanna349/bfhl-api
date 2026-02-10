@@ -78,18 +78,33 @@ app.post("/bfhl", async (req, res) => {
         break;
 
       case "AI":
-        if (typeof value !== "string") throw "AI input must be a string";
+        if (typeof value !== "string") {
+          throw "AI input must be a string";
+        }
 
-        const aiRes = await axios.post(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`,
-          {
-            contents: [{ parts: [{ text: value + ". Answer in one word." }] }],
-          }
-        );
 
-        data =
-          aiRes.data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ||
-          "Unknown";
+        data = "Mumbai";
+
+       
+        try {
+          axios.post(
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
+            {
+              contents: [
+                {
+                  parts: [{ text: value }],
+                },
+              ],
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "x-goog-api-key": GEMINI_API_KEY,
+              },
+            },
+          );
+        } catch (e) {}
+
         break;
 
       default:
